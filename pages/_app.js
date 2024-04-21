@@ -1,24 +1,25 @@
-import React from "react";
+import React, { Children, useEffect } from "react";
 import "../styles/globals.css";
-import { ThirdwebWeb3Provider } from "@3rdweb/hooks";
+import { ThirdwebProvider } from "thirdweb/react";
+import { useConnectWallet } from "../lib/contract";
 
-/**
- * The chain ID 4 represents the Rinkeby network
- * The `injected` connector is a web3 connection method used by Metamask
- */
-const supportedChainIds = [11155111];
-const connectors = {
-  injected: {},
-};
+// @ts-ignore
+function App({ children }) {
+  const { connectWallet } = useConnectWallet();
 
+  useEffect(connectWallet, []);
+
+  return <>{children}</>;
+}
+
+// @ts-ignore
 function MyApp({ Component, pageProps }) {
   return (
-    <ThirdwebWeb3Provider
-      supportedChainIds={supportedChainIds}
-      connectors={connectors}
-    >
-      <Component {...pageProps} />
-    </ThirdwebWeb3Provider>
+    <ThirdwebProvider>
+      <App>
+        <Component {...pageProps} />
+      </App>
+    </ThirdwebProvider>
   );
 }
 

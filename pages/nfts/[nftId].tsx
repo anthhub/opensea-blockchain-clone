@@ -1,15 +1,14 @@
 import Header from "../../components/Header";
-import { useEffect, useMemo, useState } from "react";
-import { useWeb3 } from "@3rdweb/hooks";
-import { ThirdwebSDK } from "@3rdweb/sdk";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NFTImage from "../../components/nft/NFTImage";
 import GeneralDetails from "../../components/nft/GeneralDetails";
 import ItemActivity from "../../components/nft/ItemActivity";
 import Purchase from "../../components/nft/Purchase";
+import { useNfts } from "../../lib/contract";
 
-const alchemy =
-  "https://eth-sepolia.g.alchemy.com/v2/M0Zkm9Cyexghw0CEXmG8jLpxoXAhU-db";
+// const alchemy =
+//   "https://eth-sepolia.g.alchemy.com/v2/M0Zkm9Cyexghw0CEXmG8jLpxoXAhU-db";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
@@ -20,46 +19,21 @@ const style = {
 };
 
 const Nft = () => {
-  const { provider } = useWeb3();
-  const [selectedNft, setSelectedNft] = useState();
-  const [listings, setListings] = useState([]);
+  const [selectedNft, setSelectedNft] = useState<any>();
   const router = useRouter();
 
-  const nftModule = useMemo(() => {
-    if (!provider) return;
-
-    const sdk = new ThirdwebSDK(provider.getSigner(), alchemy);
-    return sdk.getNFTModule("0x48AdaBCA80998DbeD90A88a153f6049F230a2F39");
-  }, [provider]);
+  const nfts = useNfts();
 
   // get all NFTs in the collection
   useEffect(() => {
-    if (!nftModule) return;
     (async () => {
-      const nfts = await nftModule.getAll();
-
-      const selectedNftItem = nfts.find((nft) => nft.id === router.query.nftId);
+      const selectedNftItem = nfts?.data?.find(
+        (nft) => nft.id?.toString() === router.query.nftId
+      );
 
       setSelectedNft(selectedNftItem);
     })();
-  }, [nftModule]);
-
-  const marketPlaceModule = useMemo(() => {
-    if (!provider) return;
-
-    const sdk = new ThirdwebSDK(provider.getSigner(), alchemy);
-
-    return sdk.getMarketplaceModule(
-      "0x659Aede65010302e917c1D6685b212472EBE5311"
-    );
-  }, [provider]);
-
-  useEffect(() => {
-    if (!marketPlaceModule) return;
-    (async () => {
-      setListings(await marketPlaceModule.getAllListings());
-    })();
-  }, [marketPlaceModule]);
+  }, [nfts]);
 
   return (
     <div>
@@ -75,8 +49,8 @@ const Nft = () => {
               <Purchase
                 isListed={router.query.isListed}
                 selectedNft={selectedNft}
-                listings={listings}
-                marketPlaceModule={marketPlaceModule}
+                // listings={listings}
+                // marketPlaceModule={marketPlaceModule}
               />
             </div>
           </div>

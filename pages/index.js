@@ -1,9 +1,11 @@
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-import { useWeb3 } from "@3rdweb/hooks";
 import { useEffect } from "react";
-import { client } from "../lib/sanityClient";
+import { client as sanityClient } from "../lib/sanityClient";
 import toast, { Toaster } from "react-hot-toast";
+
+import { useActiveAccount } from "thirdweb/react";
+import { useConnectWallet } from "../lib/contract";
 
 const style = {
   wrapper: ``,
@@ -13,11 +15,12 @@ const style = {
 };
 
 export default function Home() {
-  const { address, connectWallet } = useWeb3();
+  const { connectWallet } = useConnectWallet();
+  const account = useActiveAccount();
 
-  console.log({ address });
+  console.log({ account });
 
-  const welcomeUser = (userName, toastHandler = toast) => {
+  const welcomeUser = (userName = "", toastHandler = toast) => {
     toastHandler.success(
       `Welcome back${userName !== "Unnamed" ? ` ${userName}` : ""}!`,
       {
@@ -30,26 +33,26 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (!address) return;
+    if (!account?.address) return;
 
     (async () => {
       const userDoc = {
         _type: "users",
-        _id: address,
+        _id: account?.address,
         userName: "Unnamed",
-        walletAddress: address,
+        walletAddress: account?.address,
       };
 
-      const result = await client.createIfNotExists(userDoc);
+      const result = await sanityClient.createIfNotExists(userDoc);
 
       welcomeUser(result.userName);
     })();
-  }, [address]);
+  }, [account?.address]);
 
   return (
     <div className={style.wrapper}>
       <Toaster position="top-center" reverseOrder={false} />
-      {address ? (
+      {account?.address ? (
         <>
           <Header />
           <Hero />
@@ -58,7 +61,9 @@ export default function Home() {
         <div className={style.walletConnectWrapper}>
           <button
             className={style.button}
-            onClick={() => connectWallet("injected")}
+            onClick={() => {
+              connectWallet();
+            }}
           >
             Connect Wallet
           </button>

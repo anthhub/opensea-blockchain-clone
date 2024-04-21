@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BiHeart } from "react-icons/bi";
 import Router from "next/router";
 
-const style = { 
+const style = {
   wrapper: `bg-[#303339] flex-auto w-[14rem] h-[22rem] my-10 mx-5 rounded-2xl overflow-hidden cursor-pointer`,
   imgContainer: `h-2/3 w-full overflow-hidden flex justify-center items-center`,
   nftImg: `w-full object-cover`,
@@ -24,12 +24,12 @@ const NFTCard = ({ nftItem, title, listings }) => {
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
-    console.log({ nftItem, listings });
+    console.log("NFTCard", { nftItem, listings });
 
     const listing = listings.find((listing) => listing.asset.id === nftItem.id);
     if (Boolean(listing)) {
       setIsListed(true);
-      setPrice(listing.buyoutCurrencyValuePerToken.displayValue);
+      setPrice(listing?.currencyValuePerToken?.displayValue);
     }
   }, [listings, nftItem]);
 
@@ -44,7 +44,14 @@ const NFTCard = ({ nftItem, title, listings }) => {
       }}
     >
       <div className={style.imgContainer}>
-        <img src={nftItem.image} alt={nftItem.name} className={style.nftImg} />
+        <img
+          src={nftItem?.metadata?.image?.replace(
+            "ipfs://",
+            "https://cloudflare-ipfs.com/ipfs/"
+          )}
+          alt={nftItem?.metadata?.name}
+          className={style.nftImg}
+        />
       </div>
       <div className={style.details}>
         <div className={style.info}>
@@ -57,7 +64,7 @@ const NFTCard = ({ nftItem, title, listings }) => {
               <div className={style.priceTag}>Price</div>
               <div className={style.priceValue}>
                 <img
-                  src="https://storage.opensea.io/files/6f8e2979d428180222796ff4a33ab929.svg"
+                  src="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=031"
                   alt="eth"
                   className={style.ethLogo}
                 />

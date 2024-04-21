@@ -1,8 +1,8 @@
-import { CgArrowsExchangeV } from 'react-icons/cg'
-import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai'
-import { useState } from 'react'
-import { dummyEvents } from '../../static/dummyEvents'
-import EventItem from './itemActivity/EventItem'
+import { CgArrowsExchangeV } from "react-icons/cg";
+import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
+import { useState } from "react";
+import { dummyEvents } from "../../static/dummyEvents";
+import EventItem from "./itemActivity/EventItem";
 
 const style = {
   wrapper: `w-full mt-8 border border-[#151b22] rounded-xl bg-[#303339] overflow-hidden`,
@@ -16,10 +16,11 @@ const style = {
   eventItem: `flex px-4`,
   ethLogo: `h-5 mr-2`,
   accent: `text-[#2081e2]`,
-}
+};
 
 const ItemActivity = () => {
-  const [toggle, setToggle] = useState(true)
+  const [toggle, setToggle] = useState(true);
+
   return (
     <div className={style.wrapper}>
       <div className={style.title} onClick={() => setToggle(!toggle)}>
@@ -38,8 +39,8 @@ const ItemActivity = () => {
           <div className={style.filter}>
             <div className={style.filterTitle}>Filter</div>
             <div className={style.filterIcon}>
-              {' '}
-              <AiOutlineDown />{' '}
+              {" "}
+              <AiOutlineDown />{" "}
             </div>
           </div>
           <div className={style.tableHeader}>
@@ -55,7 +56,7 @@ const ItemActivity = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ItemActivity
+export default ItemActivity;
